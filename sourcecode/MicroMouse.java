@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class AI extends Thread 
+class AI extends Thread
 {
 	int speed = 100;
 	boolean sleep = false;
@@ -52,7 +52,7 @@ class AI extends Thread
 					e.printStackTrace();
 				}
 			}
-			
+
 			maze.repaint();
 
 			while(sleep)
@@ -121,9 +121,9 @@ class AI extends Thread
 	int i = 0;
 
 // TODO: mark with char keys
-	/* 
+	/*
 		P = pocket
-		T = traveled 
+		T = traveled
 		X = Intersection
 		G = Goal
 	*/
@@ -182,20 +182,20 @@ class AI extends Thread
 			System.out.println("");
 			state = 1;
 			position = startAr;
-			
+
 			// MARK: Letter maze output
 			for(int y = 0; y < 16; y++)
 			{
 				int start = 15 - y;
 				for(int x = 0; x < 16; x++)
 				{
-					
+
 					System.out.print(logicalMaze[x][y] + " ");
 					out.print(logicalMaze[x][y] + " ");
 				}
 				System.out.println("");
 				out.println("");
-			}	
+			}
 
 			System.out.println("");
 
@@ -211,14 +211,14 @@ class AI extends Thread
 					} else {
 						System.out.print(" " + " ");
 						out.print(" " + " ");
-					} 
+					}
 				}
 				System.out.println("");
 				out.println("");
 			}
 
 			out.close();
-			
+
 			return 1;
 		}
 
@@ -226,6 +226,20 @@ class AI extends Thread
 		boolean left = false;
 		boolean up = false;
 		boolean down = false;
+		boolean pocket = false;
+		//boolean TopBlock = false;
+
+		//breaks the program at certain point
+		
+		/*if(repeat[maze.Rx][maze.Ry-1]> 11000 && maze.getRight(maze.Rx, maze.Ry)
+		&& maze.getLeft(maze.Rx, maze.Ry)){
+				//TopBlock = true;
+				repeat[maze.Rx][maze.Ry]+=20000;
+				maze.Ry++;
+			}*/
+		if (maze.TopPocket()== true){
+			pocket = true;
+		}
 		if(!maze.getTop(maze.Rx, maze.Ry))
 		{
 			up = true;
@@ -249,6 +263,15 @@ class AI extends Thread
 
 
 			int best = 10000;
+
+			/*if(TopBlock){
+				repeat[maze.Rx][maze.Ry]+=20000;
+				best = repeat[maze.Rx][maze.Ry+1];
+			}*/
+			if(pocket){
+				repeat[maze.Rx][maze.Ry]+=20000;
+				best = repeat[maze.Rx][maze.Ry+1];
+			}
 
 			if(up)
 			{
@@ -298,6 +321,16 @@ class AI extends Thread
 			}
 
 			best = 35;
+
+			/*if(TopBlock){
+				position[maze.Rx][maze.Ry]+=20000;
+				best = position[maze.Rx][maze.Ry+1];
+			}*/
+			if(pocket){
+				position[maze.Rx][maze.Ry]+=20000;
+				best = position[maze.Rx][maze.Ry+1];
+			}
+
 			if(up)
 			{
 				if(position[maze.Rx][maze.Ry-1] < best)
@@ -391,7 +424,7 @@ class AI extends Thread
 		if(up)
 		{
 			last = 1;
-			// maze.TopPocket();
+			 maze.TopPocket();
 			if (maze.runs != 0) {
 				System.out.println("multicheck");
 				check(maze.moveUp(), last);
@@ -476,7 +509,7 @@ class MicroMouse extends JFrame implements ActionListener, ChangeListener
 		main.setVisible(true);
 
         while (currIter <= maxIter) {
-        	
+
             System.out.println("\nCurrent iteration running: " + currIter + "\n");
 
         	if (currIter == 0) {
@@ -537,9 +570,9 @@ class Maze extends JPanel
 
 	int runs = 0;
 	int x = 300;
-	
+
 	Map<Integer,Integer> mouseMap = new HashMap<Integer, Integer>();
-	
+
 	public boolean redrawPath = false;
 
 	protected void paintComponent(Graphics g)
@@ -578,7 +611,7 @@ class Maze extends JPanel
 
 		g.setColor(Color.ORANGE);
 		g.fillRect(9+(Rx*26), 9+(Ry*26), 19, 19);
-		
+
 		if(Direction.mouseHead.equals("N")) {
 			g.setColor(Color.BLACK);
 			g.fillRect(9+(Rx*26), 9+(Ry*26), 19, 5);
@@ -758,7 +791,7 @@ class Maze extends JPanel
 		{
 			FileInputStream in = new FileInputStream (fin);
 			FileInputStream comp = new FileInputStream (result);
-			
+
 			runs = multi;
 			char let;
 
@@ -935,56 +968,16 @@ class Maze extends JPanel
 			return false;
 		}
 	}
-	// boolean TopPocket()
-	// {
-	// 	if (!getTop(Rx, Ry) && !getLeft(Rx, Ry) && !getRight(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		up = false;
-	// 	}
-	// 	else if (position[maze.Rx][maze.Ry-1] > best && !getLeft(Rx, Ry) && !getRight(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		up = false;
-	// 	}
-	// }
-	// boolean BottomPocket()
-	// {
-	// 	if (!getBottom(Rx, Ry) && !getLeft(Rx, Ry) && !getRight(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		down = false;
-	// 	}
-	// 	else if (position[maze.Rx][maze.Ry+1] > best && !getLeft(Rx, Ry) && !getRight(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		down = false;
-	// 	}
-	// }
-	// boolean RightPocket()
-	// {
-	// 	if (!getTop(Rx, Ry) && !getBottom(Rx, Ry) && !getRight(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		right = false;
-	// 	}
-	// 	else if (position[maze.Rx+1][maze.Ry] > best && !getTop(Rx, Ry) && !getBottom(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		right = false;
-	// 	}
-	// }
-	// boolean LeftPocket()
-	// {
-	// 	if (!getTop(Rx, Ry) && !getLeft(Rx, Ry) && !getBottom(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		left = false;
-	// 	}
-	// 	else if (position[maze.Rx-1][maze.Ry] > best && !getTop(Rx, Ry) && !getBottom(Rx, Ry))
-	// 	{
-	// 		repeat[maze.Rx][maze.Ry] += 20000;
-	// 		left = false;
-	// 	}
-	// }
+	boolean TopPocket()
+	{
+		if (getTop(Rx, Ry) && getRight(Rx, Ry) && getLeft(Rx, Ry)) {
+			Ry++;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
 }
