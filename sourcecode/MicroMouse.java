@@ -205,6 +205,30 @@ class AI extends Thread
 			break;
 		}
 	}
+	/*
+	private char findSmallest() {
+		// MARK: check up
+		if (maze.multiIn[maze.Rx][maze.Ry - 1] < maze.multiIn[maze.Rx][maze.Ry + 1] || maze.multiIn[maze.Rx][maze.Ry - 1] < 5) {
+			System.out.print('U');
+			return 'U';
+		}
+		// MARK: check down
+		if (maze.multiIn[maze.Rx][maze.Ry + 1] < maze.multiIn[maze.Rx][maze.Ry - 1] || maze.multiIn[maze.Rx][maze.Ry + 1] < 5) {
+			System.out.print('D');
+			return 'D';
+		}
+		// MARK: check left
+		if (maze.multiIn[maze.Rx - 1][maze.Ry] < maze.multiIn[maze.Rx + 1][maze.Ry] || maze.multiIn[maze.Rx - 1][maze.Ry] < 5) {
+			System.out.print('L');
+			return 'L';
+		}
+		// MARK: check right
+		if (maze.multiIn[maze.Rx + 1][maze.Ry] < maze.multiIn[maze.Rx - 1][maze.Ry] || maze.multiIn[maze.Rx + 1][maze.Ry] < 5) {
+			System.out.print('R');
+			return 'R';
+		}
+		return 'E';
+	}*/
 
 	private int multiMove(int iterNum) throws IOException {
 		repeat[maze.Rx][maze.Ry]++;
@@ -221,7 +245,7 @@ class AI extends Thread
 			position = startAr;
 
 			System.out.print("\nFrom maze in:\n");
-			
+
 			for(int y = 0; y < 16; y++)
 			{
 				int start = 15 - y;
@@ -231,6 +255,7 @@ class AI extends Thread
 					// System.out.print(repeat[x][y] + " ");
 					System.out.print(maze.multiIn[x][y] + " ");
 					out.print(repeat[x][y] + " ");
+					maze.multiIn[x][y] = 0;
 				}
 				System.out.println("");
 				out.println("");
@@ -244,6 +269,7 @@ class AI extends Thread
 		boolean left = false;
 		boolean up = false;
 		boolean down = false;
+
 		if(!maze.getTop(maze.Rx, maze.Ry))
 		{
 			up = true;
@@ -270,33 +296,33 @@ class AI extends Thread
 
 			if(up)
 			{
-				if(repeat[maze.Rx][maze.Ry-1] < best)
+				if(repeat[maze.Rx][maze.Ry-1] < best && maze.multiIn[maze.Rx][maze.Ry-1] <= 5)
 				{
 					best = repeat[maze.Rx][maze.Ry-1];
-				}else if(repeat[maze.Rx][maze.Ry-1] > best)
+				}else if(repeat[maze.Rx][maze.Ry-1] > best && 5 <= maze.multiIn[maze.Rx][maze.Ry-1])
 				{
 					up = false;
 				}
 			}
 			if(right)
 			{
-				if(repeat[maze.Rx+1][maze.Ry] < best)
+				if(repeat[maze.Rx+1][maze.Ry] < best && maze.multiIn[maze.Rx + 1][maze.Ry] <= 5)
 				{
 					best = repeat[maze.Rx+1][maze.Ry];
 					up = false;
-				}else if(repeat[maze.Rx+1][maze.Ry] > best)
+				}else if(repeat[maze.Rx+1][maze.Ry] > best && 5 <= maze.multiIn[maze.Rx + 1][maze.Ry])
 				{
 					right = false;
 				}
 			}
 			if(left)
 			{
-				if(repeat[maze.Rx-1][maze.Ry] < best)
+				if(repeat[maze.Rx-1][maze.Ry] < best && maze.multiIn[maze.Rx - 1][maze.Ry] <= 5)
 				{
 					up = false;
 					right = false;
 					best = repeat[maze.Rx-1][maze.Ry];
-				}else if(repeat[maze.Rx-1][maze.Ry] > best)
+				}else if(repeat[maze.Rx-1][maze.Ry] > best && 5 <= maze.multiIn[maze.Rx - 1][maze.Ry])
 				{
 					left = false;
 				}
@@ -318,21 +344,21 @@ class AI extends Thread
 			best = 35;
 			if(up)
 			{
-				if(position[maze.Rx][maze.Ry-1] < best)
+				if(position[maze.Rx][maze.Ry-1] < best && maze.multiIn[maze.Rx][maze.Ry-1] <= 5) 
 				{
 					best = position[maze.Rx][maze.Ry-1];
-				}else if(position[maze.Rx][maze.Ry-1] > best)
+				}else if(position[maze.Rx][maze.Ry-1] > best && 5 <= maze.multiIn[maze.Rx][maze.Ry-1])
 				{
 					up = false;
 				}
 			}
 			if(right)
 			{
-				if(position[maze.Rx+1][maze.Ry] < best)
+				if(position[maze.Rx+1][maze.Ry] < best && maze.multiIn[maze.Rx + 1][maze.Ry] <= 5)
 				{
 					up = false;
 					best = position[maze.Rx+1][maze.Ry];
-				}else if(position[maze.Rx+1][maze.Ry] > best)
+				}else if(position[maze.Rx+1][maze.Ry] > best && 5 <= maze.multiIn[maze.Rx + 1][maze.Ry])
 				{
 					right = false;
 				}
@@ -347,7 +373,7 @@ class AI extends Thread
 								if(i == 167)
 								{
 									System.out.println(best);
-			}
+								}
 				}else if(position[maze.Rx-1][maze.Ry] > best)
 				{
 					left = false;
@@ -407,20 +433,20 @@ class AI extends Thread
 			maze.moveUp();
 			System.out.println("Direction : " + Direction.getHeadDirection(true, false, false, false));
 
-		}else if(right)
-		{
+		}
+		else if(right && (maze.multiIn[maze.Rx + 1][maze.Ry] <= 7)) {
 			last = 2;
 			maze.moveRight();
 			System.out.println("Direction : " + Direction.getHeadDirection(false, true, false, false));
 
-		}else if(left)
-		{
+		}
+		else if(left && (maze.multiIn[maze.Rx - 1][maze.Ry] <= 7)) {
 			last = 3;
 			maze.moveLeft();
 			System.out.println("Direction : " + Direction.getHeadDirection(false, false, false, true));
 
-		}else
-		{
+		}
+		else if (maze.multiIn[maze.Rx][maze.Ry + 1] < 5) {
 			last = 4;
 			maze.moveDown();
 			System.out.println("Direction : " + Direction.getHeadDirection(false, false, true, false));
@@ -622,25 +648,25 @@ class AI extends Thread
 
 
 		i++;
-		if(up)
+		if(up && (maze.multiIn[maze.Rx][maze.Ry - 1] <= 5))
 		{
 			last = 1;
 			maze.moveUp();
 			System.out.println("Direction : " + Direction.getHeadDirection(true, false, false, false));
 
-		}else if(right)
+		}else if(right && (maze.multiIn[maze.Rx + 1][maze.Ry] <= 5))
 		{
 			last = 2;
 			maze.moveRight();
 			System.out.println("Direction : " + Direction.getHeadDirection(false, true, false, false));
 
-		}else if(left)
+		}else if(left && (maze.multiIn[maze.Rx - 1][maze.Ry] <= 5))
 		{
 			last = 3;
 			maze.moveLeft();
 			System.out.println("Direction : " + Direction.getHeadDirection(false, false, false, true));
 
-		}else
+		}else if (maze.multiIn[maze.Rx][maze.Ry + 1] <= 5)
 		{
 			last = 4;
 			maze.moveDown();
@@ -703,8 +729,8 @@ class MicroMouse extends JFrame implements ActionListener, ChangeListener
 	            ai.speed = speed;
 	            ai.run(currIter);
         	} else {
-        		maze.LoadMultiRun(file, currIter);
 
+        		maze.LoadMultiRun(file, currIter);
         		maze.moveUp();
 	            maze.Rx = 0;
 	            maze.Ry = 15;
@@ -714,7 +740,7 @@ class MicroMouse extends JFrame implements ActionListener, ChangeListener
         	}
 
 	        currIter = currIter + 1;
-        }
+		}
 	}
 
 
@@ -946,7 +972,7 @@ class Maze extends JPanel
 				}
 				let = (char)in.read();
 			}
-			// fin.close();
+			in.close();
 		}catch(IOException e)
 		{
 			e.printStackTrace();
@@ -962,94 +988,33 @@ class Maze extends JPanel
 				}
 			}
 		}
-
 	}
 
 	void LoadMultiRun(String file, int multi)
 	{
-        File fin = new File("../InputTextFiles/" + file);
        	File result = new File("../InputTextFiles/result"+ (multi - 1) +".txt");
 		try
 		{
-			FileInputStream in = new FileInputStream (fin);
 			FileInputStream comp = new FileInputStream (result);
 
 			Scanner intScan = new Scanner(comp);
 
 			runs = multi;
-			char let;
 
 			int weight;
 
-			let = (char)in.read();
-
-			boolean flag = true;
-			boolean spaces = false;
-			int x = 0;
-			int y = 0;
-
-			while((byte)let != -1)
-			{
-				if(flag && x < 16)
-				{
-					if(spaces)
-					{
-						if(let == '-' || let == '_')
-						{
-							top[x][y] = true;
-							x++;
-						}else
-						{
-							top[x][y] = false;
-							x++;
-						}
-						spaces = false;
-					}else
-					{
-						spaces = true;
-					}
-				}else if(!flag && x < 17)
-				{
-					if(!spaces)
-					{
-						if(let == '|')
-						{
-							side[x][y] = true;
-							x++;
-						}else
-						{
-							side[x][y] = false;
-							x++;
-						}
-						spaces = true;
-					}else
-					{
-
-					spaces = false;
-					}
-				}
-				if(let == '\n')
-				{
-					flag = !flag;
-					if(flag == true)
-					{
-						y++;
-					}
-					x = 0;
-					spaces = false;
-				}
-				let = (char)in.read();
-			}
+			LoadMaze(file);
 
 			// MARK: reads in the int count from last run
 			while (intScan.hasNextInt()) {
 				for (int xIn = 0; xIn < 16; xIn++) {
 					for (int yIn = 0; yIn < 16; yIn++) {
-						multiIn[xIn][yIn] = intScan.nextInt();
+						weight = intScan.nextInt();
+						multiIn[xIn][yIn] = weight;
+						System.out.println("Scanned number: " + weight);
 					}	
 				}
 			}
-			in.close();
 			comp.close();
 
 		}catch(IOException e)
